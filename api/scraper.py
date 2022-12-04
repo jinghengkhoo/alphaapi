@@ -1,4 +1,3 @@
-import pickle
 import time
 
 # from selenium import webdriver
@@ -6,7 +5,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
 # from random_user_agent.user_agent import UserAgent
 # from random_user_agent.params import SoftwareName, OperatingSystem
 import undetected_chromedriver.v2 as uc
@@ -20,20 +18,13 @@ def scrape(ticker):
     options = Options()
     # options.add_argument("start-maximized")
     options.add_argument("--headless")
-
-    # driver = webdriver.Chrome(executable_path=DRIVER_PATH, options=options)
+    options.add_argument("user-data-dir=selenium") 
 
     driver = uc.Chrome(use_subprocess=True, options=options, version_main=105)
 
-    cookies = pickle.load(open("cookie/cookie.pkl", "rb"))
     driver.get(f'https://seekingalpha.com/symbol/{ticker}')
 
     time.sleep(3)
-
-    for cookie in cookies:
-        driver.add_cookie(cookie)
-
-    driver.get(f'https://seekingalpha.com/symbol/{ticker}')
 
     WebDriverWait(driver, 500).until(EC.element_to_be_clickable((By.XPATH, '//span[@data-test-id="numeral-rating-badge"]')))
     

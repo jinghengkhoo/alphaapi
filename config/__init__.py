@@ -2,11 +2,6 @@ import os
 import sys
 
 import config.settings
-from dotenv import load_dotenv
-
-load_dotenv()
-A_EMAIL = os.getenv('A_EMAIL')
-A_PW = os.getenv('A_PW')
 
 # create settings object corresponding to specified env
 APP_ENV = os.environ.get('APP_ENV', 'Dev')
