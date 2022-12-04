@@ -4,3 +4,5 @@ flask-cors
 python-dotenv
 selenium
 requests
+random-user-agent
+undetected-chromedriver

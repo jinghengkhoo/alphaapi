@@ -26,6 +26,8 @@ class SyncProcessAPIView(Resource):
 
       ratings = scrape(data["ticker"])
 
+      logger.info(ratings)
+
       return {"ratings": ratings}, 200
 
 api.add_resource(SyncProcessAPIView, '/rate')

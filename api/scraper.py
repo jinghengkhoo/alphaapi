@@ -1,39 +1,49 @@
 import pickle
 import time
 
-from selenium import webdriver
+# from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium_stealth import stealth
+from selenium.webdriver.common.action_chains import ActionChains
+# from random_user_agent.user_agent import UserAgent
+# from random_user_agent.params import SoftwareName, OperatingSystem
+import undetected_chromedriver.v2 as uc
 
 def scrape(ticker):
-    DRIVER_PATH = 'C:\\Users\\khooj\\Downloads\\chromedriver_win32\\chromedriver.exe'
+    # DRIVER_PATH = 'chromedriver/chromedriver'
+    # software_names = [SoftwareName.CHROME.value]
+    # operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value]
+    # user_agent_rotator = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
+    # useragent = user_agent_rotator.get_random_user_agent()
     options = Options()
-    options.add_argument("start-maximized")
+    # options.add_argument("start-maximized")
     options.add_argument("--headless")
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option('useAutomationExtension', False)
 
-    driver = webdriver.Chrome(executable_path=DRIVER_PATH, options=options)
+    # driver = webdriver.Chrome(executable_path=DRIVER_PATH, options=options)
 
-    stealth(driver,
-            languages=["en-US", "en"],
-            vendor="Google Inc.",
-            platform="Win32",
-            webgl_vendor="Intel Inc.",
-            renderer="Intel Iris OpenGL Engine",
-            fix_hairline=True,
-            )
+    driver = uc.Chrome(use_subprocess=True, options=options, version_main=105)
 
-    cookies = pickle.load(open("C:\\Users\\khooj\\Desktop\\alphaapi\\cookie\\cookie.pkl", "rb"))
-    driver.get('https://seekingalpha.com')
+    cookies = pickle.load(open("cookie/cookie.pkl", "rb"))
+    driver.get(f'https://seekingalpha.com/symbol/{ticker}')
+
+    time.sleep(3)
+
     for cookie in cookies:
         driver.add_cookie(cookie)
 
     driver.get(f'https://seekingalpha.com/symbol/{ticker}')
-    time.sleep(5)
+
+    WebDriverWait(driver, 500).until(EC.element_to_be_clickable((By.XPATH, '//span[@data-test-id="numeral-rating-badge"]')))
+    
     rating_elements = driver.find_elements(by=By.XPATH, value='//span[@data-test-id="numeral-rating-badge"]')
+    # actions = ActionChains(driver)
+
     ratings = []
-    for elemt in rating_elements:
-        ratings.append(elemt.text)
+    for element in rating_elements:
+        # actions.pause(4).move_to_element(element).perform()
+        ratings.append(element.get_attribute("textContent"))
     return ratings
+
+print(scrape('JNPR'))
