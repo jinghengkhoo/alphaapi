@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium_stealth import stealth
 
 def scrape(ticker):
-    DRIVER_PATH = 'C:\\Users\\khooj\\Downloads\\chromedriver_win32\\chromedriver.exe'
+    DRIVER_PATH = '/home/ubuntu/jh/alphaapi/chromedriver/chromedriver'
     options = Options()
     options.add_argument("start-maximized")
     options.add_argument("--headless")
@@ -25,7 +25,7 @@ def scrape(ticker):
             fix_hairline=True,
             )
 
-    cookies = pickle.load(open("C:\\Users\\khooj\\Desktop\\alphaapi\\cookie\\cookie.pkl", "rb"))
+    cookies = pickle.load(open("/home/ubuntu/jh/alphaapi/cookie/cookie.pkl", "rb"))
     driver.get('https://seekingalpha.com')
     for cookie in cookies:
         driver.add_cookie(cookie)
